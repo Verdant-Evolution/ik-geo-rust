@@ -1,0 +1,26 @@
+[package]
+name = "ik-geo"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+nalgebra = "0.32.2"
+fastrand = "1.8.0"
+nlopt = "0.7.0"
+
+[dev-dependencies.criterion]
+version = "0.3"
+features = [ "html_reports" ]
+
+[dev-dependencies]
+rand = "*"
+rand_seeder = "*"
+rand_pcg = "*"
+
+[lib]
+name = "ik_geo"
+path = "src/lib.rs"
+doctest = false
+
+
+
