@@ -15,6 +15,10 @@ pub struct Robot {
     kinematics: Kinematics<6, 7>,
 }
 
+pub trait IKSolver {
+    fn ik(&self, rot: Matrix3<f64>, translation: Vector3<f64>) -> Vec<(Vector6<f64>, bool)>;
+}
+
 impl Robot {
     pub fn spherical_two_parallel(kinematics: Kinematics<6, 7>) -> Self {
         Robot {
@@ -72,15 +76,6 @@ impl Robot {
         }
     }
 
-    pub fn ik(&self, rot: Matrix3<f64>, translation: Vector3<f64>) -> Vec<(Vector6<f64>, bool)> {
-        let (solutions, lest_square_ness) =
-            (self.sub_problem_solver)(&rot, &translation, &self.kinematics);
-        solutions
-            .into_iter()
-            .zip(lest_square_ness.into_iter())
-            .collect()
-    }
-
     // Get inverse kinematics and errors, sorted by error
     pub fn get_ik_sorted(
         &mut self,
@@ -121,22 +116,101 @@ impl Robot {
     }
 }
 
+impl IKSolver for Robot {
+    fn ik(&self, rot: Matrix3<f64>, translation: Vector3<f64>) -> Vec<(Vector6<f64>, bool)> {
+        let (solutions, lest_square_ness) =
+            (self.sub_problem_solver)(&rot, &translation, &self.kinematics);
+        solutions
+            .into_iter()
+            .zip(lest_square_ness.into_iter())
+            .collect()
+    }
+}
+
+#[no_mangle]
 pub fn irb6640() -> Robot {
     Robot::spherical_two_parallel(Irb6640::get_kin())
 }
 
+#[no_mangle]
 pub fn ur5() -> Robot {
     Robot::three_parallel_two_intersecting(Ur5::get_kin())
 }
 
+#[no_mangle]
 pub fn three_parallel_bot() -> Robot {
     Robot::three_parallel(ThreeParallelBot::get_kin())
 }
 
+#[no_mangle]
 pub fn two_parallel_bot() -> Robot {
     Robot::two_parallel(TwoParallelBot::get_kin())
 }
 
+#[no_mangle]
 pub fn spherical_bot() -> Robot {
     Robot::spherical(SphericalBot::get_kin())
+}
+
+pub struct KukaR800FixedQ3 {
+    robot: Robot,
+    r_6t: Matrix3<f64>,
+}
+
+impl KukaR800FixedQ3 {
+    pub fn new() -> Self {
+        let (kinematics, r_6t) = setups::KukaR800FixedQ3::get_kin_partial();
+        KukaR800FixedQ3 {
+            robot: Robot::spherical_two_intersecting(kinematics),
+            r_6t: r_6t,
+        }
+    }
+}
+
+impl IKSolver for KukaR800FixedQ3 {
+    fn ik(&self, rot: Matrix3<f64>, translation: Vector3<f64>) -> Vec<(Vector6<f64>, bool)> {
+        self.robot.ik(rot * self.r_6t.transpose(), translation)
+    }
+}
+
+pub struct RrcFixedQ6 {
+    robot: Robot,
+    r_6t: Matrix3<f64>,
+}
+
+impl RrcFixedQ6 {
+    pub fn new() -> Self {
+        let (kinematics, r_6t) = setups::RrcFixedQ6::get_kin_partial();
+        RrcFixedQ6 {
+            robot: Robot::spherical_two_intersecting(kinematics),
+            r_6t: r_6t,
+        }
+    }
+}
+
+impl IKSolver for RrcFixedQ6 {
+    fn ik(&self, rot: Matrix3<f64>, translation: Vector3<f64>) -> Vec<(Vector6<f64>, bool)> {
+        self.robot.ik(rot * self.r_6t.transpose(), translation)
+    }
+}
+
+pub struct YumiFixedQ3 {
+    robot: Robot,
+    r_6t: Matrix3<f64>,
+}
+
+impl YumiFixedQ3 {
+    pub fn new() -> Self {
+        let (kinematics, r_6t) = setups::YumiFixedQ3::get_kin_partial();
+        YumiFixedQ3 {
+            robot: Robot::spherical_two_intersecting(kinematics),
+            r_6t: r_6t,
+        }
+    }
+}
+
+impl IKSolver for YumiFixedQ3 {
+    fn ik(&self, rot: Matrix3<f64>, translation: Vector3<f64>) -> Vec<(Vector6<f64>, bool)> {
+        self.robot.ik(rot * self.r_6t.transpose(), translation)
+    }
 }

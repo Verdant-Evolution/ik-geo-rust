@@ -1,4 +1,6 @@
-use crate::robot::{irb6640, spherical_bot, three_parallel_bot, two_parallel_bot, ur5, Robot};
+use crate::robot::{
+    irb6640, spherical_bot, three_parallel_bot, two_parallel_bot, ur5, IKSolver, Robot,
+};
 
 use std::f64::consts::PI;
 
