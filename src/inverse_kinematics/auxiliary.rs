@@ -86,12 +86,14 @@ pub fn search_1d<const N: usize, F: Fn(f64) -> Vector<f64, N> > (
 ) -> Vec<(f64, usize)> {
 
     let mut results : Vec<(f64,usize)> = Vec::new();
+    // If on last iteration, we want all the results so we can return the best one
+    let mut last_results : Vec<(f64,usize,f64)> = Vec::new();
     let max_evals = [50, 200, 1000, 2000];
     let populations = [10, 30, 200, 400];
     let epsilon = 1e-8;
 
     // Do some iterative deepening
-    for (max_eval, population) in core::iter::zip(max_evals, populations) { 
+    for (j, (max_eval, population)) in core::iter::zip(max_evals, populations).enumerate() { 
         for i in 0..N {
             // TODO: parallelize this, there are 4 branches that don't depend on each other
             // Problems occur trying to multithread this due to the closure not being thread-safe.
@@ -135,25 +137,39 @@ pub fn search_1d<const N: usize, F: Fn(f64) -> Vector<f64, N> > (
             // Get the error
             let error = result.unwrap().1;
 
+            // Only push close solutions, but all solutions if on last iteration
             if error < epsilon {
                 results.push((x[0], i));
+            } else if j == max_evals.len() - 1 {
+                last_results.push((x[0], i, error))
             }
             
         }
         if results.len() > 0 {
             break;
         }
+        // If on last iteration, just use the lowest error solution
+        if j == max_evals.len() - 1 {
+            let best_result =  last_results.iter()
+                .min_by(|x, y| x.2.partial_cmp(&y.2).unwrap()).unwrap();
+            results.push((best_result.0, best_result.1))
+        }
     }
     results
 
 }
 
+
+// Search 1d and 2d are very simliar, maybe consider collapsing
+// However, they could become very different down the line.
 pub fn search_2d<const N: usize, F: Fn(f64, f64) -> Vector<f64, N>>(
     f: F,
     min: (f64, f64),
     max: (f64, f64)
 ) -> Vec<(f64, f64, usize)> {
     let mut results : Vec<(f64, f64,usize)> = Vec::new();
+    // If on last iteration, we want all the results so we can return the best one
+    let mut last_results : Vec<(f64,f64,usize,f64)> = Vec::new();
     let max_evals = [50, 200, 1000, 3000, 6000];
 
     let populations = [10, 30, 200, 400, 900];
@@ -161,7 +177,7 @@ pub fn search_2d<const N: usize, F: Fn(f64, f64) -> Vector<f64, N>>(
     let stopval = 1e-8;
 
     // Do some iterative deepening
-    for (max_eval, population) in core::iter::zip(max_evals, populations) { 
+    for (j, (max_eval, population)) in core::iter::zip(max_evals, populations).enumerate() { 
         for i in 0..N {
             // TODO: parallelize this, there are 4 branches that don't depend on each other
             // Problems occur trying to multithread this due to the closure not being thread-safe.
@@ -208,10 +224,18 @@ pub fn search_2d<const N: usize, F: Fn(f64, f64) -> Vector<f64, N>>(
 
             if error < epsilon {
                 results.push((x[0], x[1], i));
+            } else if j == max_evals.len() - 1 {
+                last_results.push((x[0], x[1], i, error))
             }
         }
         if results.len() > 0 {
             break;
+        }
+        // If on last iteration, just use the lowest error solution
+        if j == max_evals.len() - 1 {
+            let best_result =  last_results.iter()
+                .min_by(|x, y| x.3.partial_cmp(&y.3).unwrap()).unwrap();
+            results.push((best_result.0, best_result.1, best_result.2))
         }
     }
 
