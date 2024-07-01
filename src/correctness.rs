@@ -20,6 +20,8 @@ const TEST_ITERATIONS: usize = 1000;
 
 #[test]
 fn run_tests() {
+    // Seed fastrand
+    fastrand::seed(0);
     let setups: Vec<Box<dyn SetupDynamic>> = vec![
         Box::new(Subproblem6Setup::new()),
         Box::new(Subproblem5Setup::new()),

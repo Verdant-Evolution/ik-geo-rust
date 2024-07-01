@@ -152,7 +152,9 @@ pub fn search_1d<const N: usize, F: Fn(f64) -> Vector<f64, N> > (
         if j == max_evals.len() - 1 {
             let best_result =  last_results.iter()
                 .min_by(|x, y| x.2.partial_cmp(&y.2).unwrap()).unwrap();
-            results.push((best_result.0, best_result.1))
+            if best_result.2.is_finite() {
+                results.push((best_result.0, best_result.1));
+            }
         }
     }
     results
@@ -235,7 +237,9 @@ pub fn search_2d<const N: usize, F: Fn(f64, f64) -> Vector<f64, N>>(
         if j == max_evals.len() - 1 {
             let best_result =  last_results.iter()
                 .min_by(|x, y| x.3.partial_cmp(&y.3).unwrap()).unwrap();
-            results.push((best_result.0, best_result.1, best_result.2))
+            if (best_result.3.is_finite()) {
+                results.push((best_result.0, best_result.1, best_result.2));
+            }
         }
     }
 
