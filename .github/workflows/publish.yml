@@ -33,7 +33,7 @@ jobs:
 
       - name: Run tests
         run: >
-          cargo test
+          cargo test --release
           --verbose
   release-please:
     name: Execute release chores
