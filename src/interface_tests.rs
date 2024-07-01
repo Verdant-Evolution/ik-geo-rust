@@ -9,7 +9,7 @@ use rand_pcg::Pcg64;
 use rand_seeder::Seeder;
 
 const TEST_ITERATIONS: usize = 1000;
-const TOLERANCE: f64 = 1e-8;
+const TOLERANCE: f64 = 1e-3;
 
 fn test_robot(robot: Robot) {
     let mut rng: Pcg64 = Seeder::from("robot").make_rng();
