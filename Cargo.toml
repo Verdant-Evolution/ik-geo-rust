@@ -2,6 +2,12 @@
 name = "ik-geo"
 version = "0.1.0"
 edition = "2021"
+license-file = "LICENSE"
+README = "README.md"
+repository = "https://github.com/Verdant-Evolution/ik-geo-rust"
+keywords = ["robot", "robotics", "kinematics", "inverse kinematics", "ik-geo"]
+description = "Geometric solutions to inverse kinematics, using the IK-Geo algorithm"
+categories = ["science::robotics"]
 
 [dependencies]
 nalgebra = "0.32.2"
