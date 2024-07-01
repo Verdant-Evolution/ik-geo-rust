@@ -191,7 +191,7 @@ pub fn search_2d<const N: usize, F: Fn(f64, f64) -> Vector<f64, N>>(
 
             
             let mut optimizer = Nlopt::new(
-                Algorithm::GnMlsl,
+                Algorithm::GnMlslLds,
                 2,
                 cost_function,
                 nlopt::Target::Minimize, ());
