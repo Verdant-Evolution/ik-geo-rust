@@ -127,27 +127,22 @@ impl IKSolver for Robot {
     }
 }
 
-#[no_mangle]
 pub fn irb6640() -> Robot {
     Robot::spherical_two_parallel(Irb6640::get_kin())
 }
 
-#[no_mangle]
 pub fn ur5() -> Robot {
     Robot::three_parallel_two_intersecting(Ur5::get_kin())
 }
 
-#[no_mangle]
 pub fn three_parallel_bot() -> Robot {
     Robot::three_parallel(ThreeParallelBot::get_kin())
 }
 
-#[no_mangle]
 pub fn two_parallel_bot() -> Robot {
     Robot::two_parallel(TwoParallelBot::get_kin())
 }
 
-#[no_mangle]
 pub fn spherical_bot() -> Robot {
     Robot::spherical(SphericalBot::get_kin())
 }
