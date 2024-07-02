@@ -177,6 +177,20 @@ pub fn new_two_parallel(h: Matrix3x6<f64>, p: Matrix3x7<f64>) -> Robot {
     }
 }
 
+pub fn new_two_intersecting(h: Matrix3x6<f64>, p: Matrix3x7<f64>) -> Robot {
+    Robot {
+        sub_problem_solver: two_intersecting,
+        kinematics: create_kinematics(h, p),
+    }
+}
+
+pub fn new_gen_six_dof(h: Matrix3x6<f64>, p: Matrix3x7<f64>) -> Robot {
+    Robot {
+        sub_problem_solver: gen_six_dof,
+        kinematics: create_kinematics(h, p),
+    }
+}
+
 // Hardcoded bots
 
 pub fn new_irb6640() -> Robot {
