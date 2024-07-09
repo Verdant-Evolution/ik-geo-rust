@@ -8,11 +8,11 @@ To use this package, you either need to choose a an implemented model by name, o
 
 ```rust
 // Only need to import the one you are using
-use ik_geo::{
+use ik_geo::robot::{
     spherical, spherical_two_parallel, spherical_two_intersecting, three_parallel_two_intersecting, three_parallel, two_parallel, 
     two_intersecting, gen_six_dof
 }
-use ik_geo::{
+use ik_geo::robot::{
     ur5, irb6640, three_parallel_bot, two_parallel_bot, spherical_bot
 }
 
