@@ -1,9 +1,8 @@
-use crate::robot::{
-    irb6640, spherical_bot, three_parallel_bot, two_parallel_bot, ur5, IKSolver, Robot,
-};
+use crate::{inverse_kinematics::hardcoded::setups::{Irb6640, KukaR800FixedQ3, SphericalBot, ThreeParallelBot, TwoParallelBot, Ur5}, robot::{
+    irb6640, spherical, spherical_bot, spherical_two_intersecting, spherical_two_parallel, three_parallel, three_parallel_bot, three_parallel_two_intersecting, two_parallel, two_parallel_bot, ur5, IKSolver, Robot
+}};
 
 use std::f64::consts::PI;
-
 use rand::prelude::*;
 use rand_pcg::Pcg64;
 use rand_seeder::Seeder;
@@ -64,4 +63,40 @@ fn test_two_parallel_bot() {
 #[test]
 fn test_ur5() {
     test_robot(ur5());
+}
+
+#[test]
+fn test_spherical() {
+    let kin = SphericalBot::get_kin();
+    test_robot(spherical(kin.h, kin.p));
+}
+
+#[test]
+fn test_spherical_two_intersecting() {
+    let (kin, _) = KukaR800FixedQ3::get_kin_partial();
+    test_robot(spherical_two_intersecting(kin.h, kin.p));
+}
+
+#[test]
+fn test_spherical_two_parallel() {
+    let kin = Irb6640::get_kin();
+    test_robot(spherical_two_parallel(kin.h, kin.p));
+}
+
+#[test]
+fn test_three_parallel() {
+    let kin = ThreeParallelBot::get_kin();
+    test_robot(three_parallel(kin.h, kin.p));
+}
+
+#[test]
+fn test_three_parallel_two_intersecting() {
+    let kin = Ur5::get_kin();
+    test_robot(three_parallel_two_intersecting(kin.h, kin.p));
+}
+
+#[test]
+fn test_two_parallel() {
+    let kin = TwoParallelBot::get_kin();
+    test_robot(two_parallel(kin.h, kin.p));
 }

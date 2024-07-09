@@ -7,7 +7,15 @@ This is a Rust implementation of the analytic inverse kinematics algorithms foun
 To use this package, you either need to choose a an implemented model by name, or specify the kinematics as a Product of Exponentials and select the appropriate problem decomposition.
 
 ```rust
-use ik_geo::{irb6640, spherical_bot, three_parallel_bot, two_parallel_bot, ur5, Robot};
+// Only need to import the one you are using
+use ik_geo::{
+    spherical, spherical_two_parallel, spherical_two_intersecting, three_parallel_two_intersecting, three_parallel, two_parallel, 
+    two_intersecting, gen_six_dof
+}
+use ik_geo::{
+    ur5, irb6640, three_parallel_bot, two_parallel_bot, spherical_bot
+}
+
 fn main() {
     let robot = ur5();
 

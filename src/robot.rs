@@ -1,7 +1,13 @@
 use crate::inverse_kinematics::{
-    auxiliary::{Kinematics, Matrix3x7}, gen_six_dof, hardcoded::*, setups::calculate_ik_error, spherical,
-    spherical_two_intersecting, spherical_two_parallel, three_parallel,
-    three_parallel_two_intersecting, two_intersecting, two_parallel,
+    auxiliary::{Kinematics, Matrix3x7}, hardcoded::*, setups::calculate_ik_error,
+    gen_six_dof as gen_six_dof_solver,
+    spherical as spherical_solver,
+    spherical_two_intersecting as spherical_two_intersecting_solver,
+    spherical_two_parallel as spherical_two_parallel_solver,
+    three_parallel as three_parallel_solver,
+    three_parallel_two_intersecting as three_parallel_two_intersecting_solver,
+    two_intersecting as two_intersecting_solver,
+    two_parallel as two_parallel_solver,
 };
 
 use nalgebra::{Matrix3, Matrix3x6, Vector3, Vector6};
@@ -22,57 +28,57 @@ pub trait IKSolver {
 impl Robot {
     pub fn spherical_two_parallel(kinematics: Kinematics<6, 7>) -> Self {
         Robot {
-            sub_problem_solver: spherical_two_parallel,
-            kinematics: kinematics,
+            sub_problem_solver: spherical_two_parallel_solver,
+            kinematics
         }
     }
 
     pub fn spherical_two_intersecting(kinematics: Kinematics<6, 7>) -> Self {
         Robot {
-            sub_problem_solver: spherical_two_intersecting,
-            kinematics: kinematics,
+            sub_problem_solver: spherical_two_intersecting_solver,
+            kinematics
         }
     }
 
     pub fn spherical(kinematics: Kinematics<6, 7>) -> Self {
         Robot {
-            sub_problem_solver: spherical,
-            kinematics: kinematics,
+            sub_problem_solver: spherical_solver,
+            kinematics
         }
     }
 
     pub fn three_parallel_two_intersecting(kinematics: Kinematics<6, 7>) -> Self {
         Robot {
-            sub_problem_solver: three_parallel_two_intersecting,
-            kinematics: kinematics,
+            sub_problem_solver: three_parallel_two_intersecting_solver,
+            kinematics
         }
     }
 
     pub fn three_parallel(kinematics: Kinematics<6, 7>) -> Self {
         Robot {
-            sub_problem_solver: three_parallel,
-            kinematics: kinematics,
+            sub_problem_solver: three_parallel_solver,
+            kinematics
         }
     }
 
     pub fn two_parallel(kinematics: Kinematics<6, 7>) -> Self {
         Robot {
-            sub_problem_solver: two_parallel,
-            kinematics: kinematics,
+            sub_problem_solver: two_parallel_solver,
+            kinematics
         }
     }
 
     pub fn two_intersecting(kinematics: Kinematics<6, 7>) -> Self {
         Robot {
-            sub_problem_solver: two_intersecting,
-            kinematics: kinematics,
+            sub_problem_solver: two_intersecting_solver,
+            kinematics
         }
     }
 
     pub fn gen_six_dof(kinematics: Kinematics<6, 7>) -> Self {
         Robot {
-            sub_problem_solver: gen_six_dof,
-            kinematics: kinematics,
+            sub_problem_solver: gen_six_dof_solver,
+            kinematics
         }
     }
 
@@ -130,86 +136,62 @@ impl IKSolver for Robot {
 fn create_kinematics(h: Matrix3x6<f64>, p: Matrix3x7<f64>) -> Kinematics<6, 7> {
     Kinematics {
         h,
-        p
+        p,
     }
 }
 
 // Create each bot from h, p
-pub fn new_spherical_two_parallel(h: Matrix3x6<f64>, p: Matrix3x7<f64>) -> Robot {
-    Robot {
-        sub_problem_solver: spherical_two_parallel,
-        kinematics: create_kinematics(h, p),
-    }
+pub fn spherical_two_parallel(h: Matrix3x6<f64>, p: Matrix3x7<f64>) -> Robot {
+    Robot::spherical_two_parallel(create_kinematics(h, p))
 }
 
-pub fn new_spherical_two_intersecting(h: Matrix3x6<f64>, p: Matrix3x7<f64>) -> Robot {
-    Robot {
-        sub_problem_solver: spherical_two_intersecting,
-        kinematics: create_kinematics(h, p),
-    }
+pub fn spherical_two_intersecting(h: Matrix3x6<f64>, p: Matrix3x7<f64>) -> Robot {
+    Robot::spherical_two_intersecting(create_kinematics(h, p))
 }
 
-pub fn new_spherical(h: Matrix3x6<f64>, p: Matrix3x7<f64>) -> Robot {
-    Robot {
-        sub_problem_solver: spherical,
-        kinematics: create_kinematics(h, p),
-    }
+pub fn spherical(h: Matrix3x6<f64>, p: Matrix3x7<f64>) -> Robot {
+    Robot::spherical(create_kinematics(h, p))
 }
 
-pub fn new_three_parallel_two_intersecting(h: Matrix3x6<f64>, p: Matrix3x7<f64>) -> Robot {
-    Robot {
-        sub_problem_solver: three_parallel_two_intersecting,
-        kinematics: create_kinematics(h, p),
-    }
+pub fn three_parallel_two_intersecting(h: Matrix3x6<f64>, p: Matrix3x7<f64>) -> Robot {
+    Robot::three_parallel_two_intersecting(create_kinematics(h, p))
 }
 
-pub fn new_three_parallel(h: Matrix3x6<f64>, p: Matrix3x7<f64>) -> Robot {
-    Robot {
-        sub_problem_solver: three_parallel,
-        kinematics: create_kinematics(h, p),
-    }
+pub fn three_parallel(h: Matrix3x6<f64>, p: Matrix3x7<f64>) -> Robot {
+    Robot::three_parallel(create_kinematics(h, p))
 }
 
-pub fn new_two_parallel(h: Matrix3x6<f64>, p: Matrix3x7<f64>) -> Robot {
-    Robot {
-        sub_problem_solver: two_parallel,
-        kinematics: create_kinematics(h, p),
-    }
+pub fn two_parallel(h: Matrix3x6<f64>, p: Matrix3x7<f64>) -> Robot {
+    Robot::two_parallel(create_kinematics(h, p))
 }
 
-pub fn new_two_intersecting(h: Matrix3x6<f64>, p: Matrix3x7<f64>) -> Robot {
-    Robot {
-        sub_problem_solver: two_intersecting,
-        kinematics: create_kinematics(h, p),
-    }
+pub fn two_intersecting(h: Matrix3x6<f64>, p: Matrix3x7<f64>) -> Robot {
+    Robot::two_intersecting(create_kinematics(h, p))
 }
 
-pub fn new_gen_six_dof(h: Matrix3x6<f64>, p: Matrix3x7<f64>) -> Robot {
-    Robot {
-        sub_problem_solver: gen_six_dof,
-        kinematics: create_kinematics(h, p),
-    }
+pub fn gen_six_dof(h: Matrix3x6<f64>, p: Matrix3x7<f64>) -> Robot {
+    Robot::gen_six_dof(create_kinematics(h, p))
 }
 
 // Hardcoded bots
 
-pub fn new_irb6640() -> Robot {
+pub fn irb6640() -> Robot {
     Robot::spherical_two_parallel(Irb6640::get_kin())
 }
 
-pub fn new_ur5() -> Robot {
+pub fn ur5() -> Robot {
     Robot::three_parallel_two_intersecting(Ur5::get_kin())
 }
 
-pub fn new_three_parallel_bot() -> Robot {
+pub fn three_parallel_bot() -> Robot {
     Robot::three_parallel(ThreeParallelBot::get_kin())
 }
 
-pub fn new_two_parallel_bot() -> Robot {
+pub fn two_parallel_bot() -> Robot {
     Robot::two_parallel(TwoParallelBot::get_kin())
 }
 
-pub fn new_spherical_bot() -> Robot {
+pub fn spherical_bot() -> Robot {
     Robot::spherical(SphericalBot::get_kin())
 }
 
